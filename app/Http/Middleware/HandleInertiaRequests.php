@@ -54,6 +54,7 @@ class HandleInertiaRequests extends Middleware
                 'mascots' => Setting::current()->mascotUrls(),
                 'theme_preset' => Setting::current()->theme_preset,
             ],
+            'repositoryUrl' => config('app.repository_url') ?: null,
             'reviewCount' => fn (): ?int => $request->user()?->canReview()
                 ? Quest::query()->status(QuestStatus::InReview)->count()
                 : null,

@@ -23,6 +23,17 @@ test('the shared auth user has exactly the fields the app needs', function () {
             ]));
 });
 
+test('the repository url is shared, and null when the config is empty', function () {
+    $this->get(route('login'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('repositoryUrl', 'https://github.com/guildquests/quest-board'));
+
+    config(['app.repository_url' => '']);
+
+    $this->get(route('login'))
+        ->assertInertia(fn (Assert $page) => $page->where('repositoryUrl', null));
+});
+
 test('progress is level 1 for a new user and null for guests', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('board'))

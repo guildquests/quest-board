@@ -32,6 +32,7 @@ declare module '@inertiajs/core' {
     export interface InertiaConfig {
         sharedPageProps: {
             branding: Branding;
+            repositoryUrl: string | null;
             auth: Auth;
             progress: Progress | null;
             reviewCount: number | null;

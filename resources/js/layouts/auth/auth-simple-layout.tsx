@@ -1,4 +1,5 @@
 import { usePage } from '@inertiajs/react';
+import { AppFooter } from '@/components/app-footer';
 import type { AuthLayoutProps } from '@/types';
 
 // Prototype #login screen: full-screen art, centered card with crest, mascot on wide screens.
@@ -50,6 +51,8 @@ export default function AuthSimpleLayout({
 
                 <div className="mt-6">{children}</div>
             </div>
+
+            <AppFooter className="absolute inset-x-0 bottom-3 z-10" />
 
             <img
                 src={branding.mascots.login}

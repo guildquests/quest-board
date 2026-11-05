@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
+import { AppFooter } from '@/components/app-footer';
 import { AchievementBadge } from '@/components/game/achievement-badge';
 import { ActivityLog } from '@/components/game/activity-log';
 import { AppNav } from '@/components/game/app-nav';
@@ -1145,6 +1146,14 @@ const groups: LibraryGroup[] = [
                     'The main tabs from one typed config; icon over short label on phones (520px and below). Reviews shows only for leads and admins.',
                 importPath: '@/components/game/app-nav',
                 example: <AppNav />,
+            },
+            {
+                id: 'app-footer',
+                title: 'AppFooter',
+                purpose:
+                    'A small muted line at the bottom of app pages and the login page: "<app name> is open source." and a link to the public repo. Reads the shared branding and repositoryUrl props; renders nothing when repositoryUrl is empty.',
+                importPath: '@/components/app-footer',
+                example: <AppFooter />,
             },
             {
                 id: 'demo-banner',

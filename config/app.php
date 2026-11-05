@@ -17,6 +17,9 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    // Public source repo, linked in the footer. Set it empty to hide the link.
+    'repository_url' => env('APP_REPOSITORY_URL', 'https://github.com/guildquests/quest-board'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

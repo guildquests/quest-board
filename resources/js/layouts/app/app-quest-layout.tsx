@@ -1,5 +1,6 @@
 import { usePage } from '@inertiajs/react';
 import type { PropsWithChildren } from 'react';
+import { AppFooter } from '@/components/app-footer';
 import { AppNav } from '@/components/game/app-nav';
 import { DemoBanner } from '@/components/game/demo-banner';
 import { ImpersonationBanner } from '@/components/game/impersonation-banner';
@@ -41,6 +42,8 @@ export default function AppQuestLayout({
             <main className="mx-auto max-w-[1440px] px-4 pt-6 pb-12 min-[700px]:px-6">
                 {children}
             </main>
+
+            <AppFooter className="pb-8" />
         </div>
     );
 }
