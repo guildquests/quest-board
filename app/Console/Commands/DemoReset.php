@@ -7,6 +7,8 @@ namespace App\Console\Commands;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Database\Console\Migrations\FreshCommand;
+use Illuminate\Database\Console\WipeCommand;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
@@ -34,6 +36,11 @@ class DemoReset extends Command
                 throw new RuntimeException('Could not enable maintenance mode.');
             }
 
+            // AppServiceProvider blocks destructive commands in production. Lift the
+            // block for migrate:fresh (and the db:wipe it calls) during this reset only.
+            FreshCommand::prohibit(false);
+            WipeCommand::prohibit(false);
+
             if ($this->call('migrate:fresh', ['--seed' => true, '--force' => true]) !== self::SUCCESS) {
                 throw new RuntimeException('Database reset failed.');
             }
@@ -49,6 +56,8 @@ class DemoReset extends Command
 
             return self::FAILURE;
         } finally {
+            FreshCommand::prohibit(app()->isProduction());
+            WipeCommand::prohibit(app()->isProduction());
             $this->call('up');
         }
 

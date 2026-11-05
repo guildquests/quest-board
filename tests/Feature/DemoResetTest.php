@@ -6,10 +6,12 @@ use App\Models\User;
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 afterEach(function (): void {
+    DB::prohibitDestructiveCommands(false);
     $this->artisan('migrate:fresh', ['--force' => true])->assertSuccessful();
     RefreshDatabaseState::$migrated = false;
 });
@@ -48,6 +50,18 @@ test('the demo reset wipes data seeds demo accounts and deletes uploads', functi
     expect(app()->isDownForMaintenance())->toBeFalse();
     Log::shouldHaveReceived('info', ['Demo reset started.'])->once();
     Log::shouldHaveReceived('info', ['Demo reset finished.'])->once();
+});
+
+test('the demo reset runs when destructive commands are blocked as in production', function () {
+    config(['demo.enabled' => true]);
+    Storage::fake('public');
+    DB::prohibitDestructiveCommands();
+
+    $this->artisan('quests:demo-reset')
+        ->expectsOutput('Demo reset finished.')
+        ->assertSuccessful();
+
+    $this->assertDatabaseHas('users', ['email' => 'admin@example.com']);
 });
 
 test('the demo reset lifts maintenance mode when a step fails', function () {
