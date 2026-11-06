@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Middleware\EnsureUserIsActive;
+use App\Http\Middleware\ForceHttpsScheme;
 use App\Http\Middleware\HandleImpersonation;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
@@ -27,6 +28,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 | Request::HEADER_X_FORWARDED_PORT
                 | Request::HEADER_X_FORWARDED_PROTO,
         );
+
+        // Runs before TrustProxies, so an https APP_URL wins over a proxy that says http.
+        $middleware->prepend(ForceHttpsScheme::class);
 
         $middleware->web(append: [
             HandleImpersonation::class,

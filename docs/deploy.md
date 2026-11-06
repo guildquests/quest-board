@@ -65,7 +65,9 @@ The host port is bound to `127.0.0.1` by default. Set `WEB_BIND=0.0.0.0` only fo
 
 Create a Docker Compose service from this repo, turn on **Isolated Deployment**, paste your `.env` into the **Environment** tab, and add your domain in the **Domains** tab on the **`app`** service, container port **8080**. If port 8080 is already taken on the host, set `WEB_PORT` to another value.
 
-The domain reaches the `app` service over the Docker network, not the host port, so `WEB_BIND` should not affect it. This setup follows the Dokploy docs but has not been tried on a live Dokploy.
+The domain reaches the `app` service over the Docker network, not the host port, so `WEB_BIND` should not affect it.
+
+If a CDN such as CloudFront sits in front of Dokploy and talks plain HTTP to it, keep HTTPS off for the domain in Dokploy. With it on, Traefik redirects the CDN's HTTP requests to https, and the browser loops ("The page isn't redirecting properly"). Set `APP_URL=https://...`: in production the app then treats every request as https, even when Traefik says http (`app/Http/Middleware/ForceHttpsScheme.php`).
 
 ## 5. Check the queue and scheduler
 

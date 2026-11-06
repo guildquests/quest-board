@@ -24,6 +24,32 @@ test('a request forwarded as https produces https route URLs', function () {
         ]);
 });
 
+test('in production with an https APP_URL, a request forwarded as http is treated as https', function () {
+    app()->detectEnvironment(fn () => 'production');
+    config(['app.url' => 'https://quests.example.com']);
+
+    $this->get('/_proxy-test', [
+        'X-Forwarded-Proto' => 'http',
+        'X-Forwarded-Host' => 'quests.example.com',
+        'X-Forwarded-Port' => '80',
+    ])
+        ->assertOk()
+        ->assertJson(['secure' => true]);
+});
+
+test('the saved login link is https when the proxy forwards http in production', function () {
+    app()->detectEnvironment(fn () => 'production');
+    config(['app.url' => 'https://quests.example.com']);
+
+    $this->get('/', [
+        'X-Forwarded-Proto' => 'http',
+        'X-Forwarded-Host' => 'quests.example.com',
+        'X-Forwarded-Port' => '80',
+    ])->assertRedirect();
+
+    expect(session('url.intended'))->toStartWith('https://quests.example.com');
+});
+
 test('a plain http request without proxy headers stays http', function () {
     $this->get('/_proxy-test')
         ->assertOk()
