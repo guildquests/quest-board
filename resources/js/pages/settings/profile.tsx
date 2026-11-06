@@ -2,6 +2,7 @@ import { Form, Head, usePage } from '@inertiajs/react';
 import { Check, Save, UserRound } from 'lucide-react';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import { Portrait } from '@/components/game/portrait';
+import { PortraitPicker } from '@/components/game/portrait-picker';
 import { SectionHeading } from '@/components/game/section-heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -13,9 +14,15 @@ import {
     fieldReadOnlyClassName,
 } from '@/lib/form-styles';
 import { cn } from '@/lib/utils';
+import type { PortraitOption } from '@/types';
+
+type ProfileProps = {
+    portraits: PortraitOption[];
+    currentPortrait: string | null;
+};
 
 export default function Profile() {
-    const { auth } = usePage().props;
+    const { auth, portraits, currentPortrait } = usePage<ProfileProps>().props;
 
     return (
         <>
@@ -37,15 +44,23 @@ export default function Profile() {
             >
                 {({ processing, errors, recentlySuccessful }) => (
                     <>
-                        <div className="mb-[18px] flex items-center gap-4">
-                            <Portrait
-                                src={auth.user.portrait_url ?? undefined}
-                                name={auth.user.name}
-                                size="xl"
+                        <div className="mb-3.5 grid gap-3">
+                            <div className="flex items-center gap-4">
+                                <Portrait
+                                    src={auth.user.portrait_url ?? undefined}
+                                    name={auth.user.name}
+                                    size="xl"
+                                />
+                                <p className="text-[13.5px] text-muted-foreground">
+                                    Pick a portrait, or None to show your
+                                    initials.
+                                </p>
+                            </div>
+                            <PortraitPicker
+                                portraits={portraits}
+                                defaultValue={currentPortrait}
                             />
-                            <p className="text-[13.5px] text-muted-foreground">
-                                Your portrait is set by an admin.
-                            </p>
+                            <InputError message={errors.portrait} />
                         </div>
 
                         <div className="mb-3.5 grid gap-[7px]">
