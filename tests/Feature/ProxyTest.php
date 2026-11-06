@@ -34,7 +34,10 @@ test('in production with an https APP_URL, a request forwarded as http is treate
         'X-Forwarded-Port' => '80',
     ])
         ->assertOk()
-        ->assertJson(['secure' => true]);
+        ->assertJson([
+            'url' => 'https://quests.example.com/login',
+            'secure' => true,
+        ]);
 });
 
 test('the saved login link is https when the proxy forwards http in production', function () {
@@ -47,7 +50,7 @@ test('the saved login link is https when the proxy forwards http in production',
         'X-Forwarded-Port' => '80',
     ])->assertRedirect();
 
-    expect(session('url.intended'))->toStartWith('https://quests.example.com');
+    expect(session('url.intended'))->toBe('https://quests.example.com');
 });
 
 test('a plain http request without proxy headers stays http', function () {

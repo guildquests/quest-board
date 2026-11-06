@@ -17,11 +17,13 @@ class ForceHttpsScheme
      * makes the proxy send X-Forwarded-Proto: http. URL::forceScheme only covers
      * generated links; the saved "intended" login link comes from the request
      * itself, so the request must be https too. Runs before TrustProxies.
+     * The port is set too: Traefik sends X-Forwarded-Port: 80, which would give https://host:80.
      */
     public function handle(Request $request, Closure $next): Response
     {
         if (app()->isProduction() && str_starts_with((string) config('app.url'), 'https://')) {
             $request->headers->set('X-Forwarded-Proto', 'https');
+            $request->headers->set('X-Forwarded-Port', '443');
         }
 
         return $next($request);
